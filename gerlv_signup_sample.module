@@ -1,0 +1,126 @@
+<?php
+
+function gerlv_signup_sample_menu() {
+  $items = array();
+
+  //accessible via http://yourdrupalinstance/signup
+  $items['signup'] = array(
+      'title' => 'Subscribe',
+      'page callback' => '_gerlv_signup_sample_get_form',
+      'access arguments' => array('access content'),
+  );
+
+  return $items;
+}
+
+function gerlv_signup_sample_block($op = 'list', $delta = 0, $edit = array()) {
+  switch ($op) {
+    case 'list':
+        return array(
+          'form' => array(
+             'info' => 'Signup form'
+          )
+        );
+      break;
+
+    case 'edit':
+      break;
+
+    case 'save':
+      break;
+
+    case 'view':
+        switch ($delta) {
+          case 'form':
+              return array(
+                'subject' => t('Signup'),
+                'content' => _gerlv_signup_sample_get_form()
+              );
+            break;
+        }
+      break;
+  }
+}
+
+function _gerlv_signup_sample_get_form() {
+  $form = drupal_get_form('gerlv_signup_sample_form');
+  $messages = _gerlv_signup_sample_messages("gerlv_signup_sample_form");
+  return $messages . $form;
+}
+
+function _gerlv_signup_sample_messages($form_id){
+  $messages = drupal_get_messages();
+  $output = '';
+  if($_POST){
+    if(isset($_POST['form_id']) && $_POST['form_id'] == $form_id){
+      if(isset($messages['error']) && count($messages['error'])){
+        $output = '<ul class="error">';
+        foreach($messages['error'] as $err){
+          $output .= '<li>' . $err . '</li>';
+        }
+        $output .= '</ul>';
+      }
+    }
+  }
+  
+  if(isset($messages['status']) && count($messages['status'])){
+    $output = '<ul class="status">';
+    foreach($messages['status'] as $st){
+      $output .= '<li>' . $st . '</li>';
+    }
+    $output .= '</ul>';
+  }
+  
+  return $output;
+}
+
+function gerlv_signup_sample_form($form_state) {
+  $form['firstname'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Name (First)'), 
+    '#size' => 60, 
+    '#maxlength' => 128, 
+    '#required' => TRUE,
+  );
+  
+  $form['lastname'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Name (Last)'), 
+    '#size' => 60, 
+    '#maxlength' => 128, 
+    '#required' => TRUE,
+  );
+
+  $form['email'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Email'), 
+    '#size' => 60, 
+    '#maxlength' => 128, 
+    '#required' => TRUE,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit', 
+    '#value' => t('Save')
+  );
+  
+  return $form;
+}
+
+function gerlv_signup_sample_form_validate($form, &$form_state) {  
+  $mail = $form_state['values']['email'];
+  if (!valid_email_address($mail)) {
+    form_set_error('values][email', t('The email address appears to be invalid.'));
+  }
+}
+
+function gerlv_signup_sample_form_submit($form, &$form_state) {
+  $signup = new StdClass;
+  
+  $signup->firstname = $form_state['values']['firstname'];
+  $signup->lastname = $form_state['values']['lastname'];
+  $signup->email = $form_state['values']['email'];
+  
+  drupal_write_record("gerlv_signup_sample", $signup);
+  drupal_set_message(t('Your form has been saved.'));
+}

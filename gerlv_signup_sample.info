@@ -1,0 +1,7 @@
+name = "ger.lv Sample signup form"
+core = "6.x"
+description = "Signup form for both, separate page and as block"
+dependencies[] = "views"
+package = "ger.lv"
+project = "gerlv_signup_sample"
+version = "6.x-0.1"

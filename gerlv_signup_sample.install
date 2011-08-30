@@ -1,0 +1,38 @@
+<?php
+function gerlv_signup_sample_schema() {
+  $schema['gerlv_signup_sample'] = array(
+    'description' => 'Base table for signups',
+    'fields' => array(
+      'firstname' => array(
+        'description' => 'First name',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'lastname' => array(
+        'description' => 'Last name',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'email' => array(
+        'description' => 'Email',
+        'type' => 'varchar',
+        'length' => 256,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+    ),
+  );
+  return $schema;
+}
+
+function gerlv_signup_sample_install() {
+  drupal_install_schema('gerlv_signup_sample');
+}
+
+function gerlv_signup_sample_uninstall() {
+  drupal_uninstall_schema('gerlv_signup_sample');
+}
